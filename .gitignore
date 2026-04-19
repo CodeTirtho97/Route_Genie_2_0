@@ -1,0 +1,47 @@
+# ── Architecture / private docs ──────────────────────────────
+RouteGenie_2_0.md
+
+# ── Backend ───────────────────────────────────────────────────
+backend/.venv/
+backend/.env
+backend/.env.*
+backend/dist/
+backend/build/
+backend/*.egg-info/
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Testing / coverage
+.pytest_cache/
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.coverage
+backend/coverage.xml
+*.cover
+
+# ── Frontend ──────────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/.env.*.local
+
+# ── General ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+*.log.*
+
+# Editor / IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
