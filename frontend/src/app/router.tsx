@@ -4,9 +4,17 @@ import { CircularProgress, Box } from "@mui/material";
 import { AuthGuard } from "../components/features/auth/AuthGuard";
 import { ROUTES } from "../constants/routes";
 
-const Login    = lazy(() => import("../pages/Auth/Login"));
-const Signup   = lazy(() => import("../pages/Auth/Signup"));
-const Dashboard = lazy(() => import("../pages/Dashboard/Dashboard"));
+const Landing        = lazy(() => import("../pages/Landing/Landing"));
+const Login          = lazy(() => import("../pages/Auth/Login"));
+const Signup         = lazy(() => import("../pages/Auth/Signup"));
+const About          = lazy(() => import("../pages/About/About"));
+const ForgotPassword = lazy(() => import("../pages/Auth/ForgotPassword"));
+const ResetPassword  = lazy(() => import("../pages/Auth/ResetPassword"));
+const AppLayout      = lazy(() => import("../components/layout/AppLayout"));
+const Dashboard      = lazy(() => import("../pages/Dashboard/Dashboard"));
+const Trips          = lazy(() => import("../pages/Trips/Trips"));
+const TripCreate     = lazy(() => import("../pages/Trips/TripCreate"));
+const TripDetail     = lazy(() => import("../pages/Trips/TripDetail"));
 
 const Loader = () => (
   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
@@ -17,12 +25,24 @@ const Loader = () => (
 const wrap = (el: React.ReactNode) => <Suspense fallback={<Loader />}>{el}</Suspense>;
 
 export const router = createBrowserRouter([
-  { path: ROUTES.login,  element: wrap(<Login />) },
-  { path: ROUTES.signup, element: wrap(<Signup />) },
+  // Public routes
+  { path: ROUTES.home,           element: wrap(<Landing />) },
+  { path: ROUTES.login,          element: wrap(<Login />) },
+  { path: ROUTES.signup,         element: wrap(<Signup />) },
+  { path: ROUTES.about,          element: wrap(<About />) },
+  { path: ROUTES.forgotPassword, element: wrap(<ForgotPassword />) },
+  { path: ROUTES.resetPassword,  element: wrap(<ResetPassword />) },
+
+  // Authenticated routes — wrapped in AppLayout
   {
-    path: ROUTES.dashboard,
-    element: <AuthGuard>{wrap(<Dashboard />)}</AuthGuard>,
+    element: <AuthGuard>{wrap(<AppLayout />)}</AuthGuard>,
+    children: [
+      { path: ROUTES.dashboard,  element: wrap(<Dashboard />) },
+      { path: ROUTES.trips,      element: wrap(<Trips />) },
+      { path: ROUTES.tripCreate, element: wrap(<TripCreate />) },
+      { path: ROUTES.tripDetail(), element: wrap(<TripDetail />) },
+    ],
   },
-  { path: "/", element: <Navigate to={ROUTES.dashboard} replace /> },
-  { path: "*", element: <Navigate to={ROUTES.dashboard} replace /> },
+
+  { path: "*", element: <Navigate to={ROUTES.home} replace /> },
 ]);

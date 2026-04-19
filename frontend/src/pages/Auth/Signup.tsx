@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { authService } from "../../services/auth.service";
 import { useAuthStore } from "../../store/auth.store";
 import { ThemeToggle } from "../../components/ui/ThemeToggle";
+import { LegalModal } from "../../components/ui/LegalModal";
 import { ROUTES } from "../../constants/routes";
 import { fadeUp, staggerContainer, buttonPress } from "../../theme/motion";
 
@@ -62,7 +63,7 @@ type FormData = z.infer<typeof schema>;
 const HERO_IMAGE = "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1400&q=90";
 
 const PERKS = [
-  { heading: "AI Itinerary Builder",  body: "Day-by-day plans generated in seconds"             },
+  { heading: "Itinerary Builder with AI",  body: "Day-by-day plans generated in seconds"             },
   { heading: "Booking Tracker",       body: "Flights, hotels, and activities in one place"       },
   { heading: "Live Travel Data",      body: "Weather forecasts and exchange rates, always fresh" },
 ];
@@ -80,6 +81,7 @@ export default function Signup() {
   const { login: storeLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError]   = useState<string | null>(null);
+  const [legalModal, setLegalModal]     = useState<"terms" | "privacy" | null>(null);
 
   const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -102,7 +104,7 @@ export default function Signup() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel — always cinematic dark ───────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", borderRight: isDark ? "none" : "1px solid rgba(180,140,80,0.15)" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
@@ -114,18 +116,20 @@ export default function Signup() {
 
         <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.3) 45%, transparent 70%)" }} />
-        <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
+        {isDark && (
+          <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
+        )}
 
         {/* Brand watermark */}
         <motion.div
-          style={{ position: "absolute", top: 32, left: 36 }}
+          style={{ position: "absolute", top: 28, left: 32 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: `${primary}CC`, fontSize: "1rem", letterSpacing: "0.05em" }}>
-            RouteGenie
-          </Typography>
+          <Box component={RouterLink} to={ROUTES.home} sx={{ display: "block", lineHeight: 0 }}>
+            <Box component="img" src="/Icon.png" alt="RouteGenie" sx={{ height: 40, width: "auto", filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))", transition: "opacity 0.2s", "&:hover": { opacity: 0.8 } }} />
+          </Box>
         </motion.div>
 
         {/* Hero copy + perks */}
@@ -177,6 +181,8 @@ export default function Signup() {
         backgroundColor: panelBg,
         overflowY:       "auto",
         position:        "relative",
+        boxShadow:       isDark ? "none" : "-12px 0 40px rgba(0,0,0,0.07)",
+        backgroundImage: isDark ? "none" : "radial-gradient(ellipse at 25% 20%, rgba(245,158,11,0.06) 0%, transparent 60%)",
       }}>
 
         {/* Theme toggle */}
@@ -193,7 +199,10 @@ export default function Signup() {
             transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
             style={{ textAlign: "center", marginBottom: 40 }}
           >
-            <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: primary, fontSize: "2.6rem", lineHeight: 1, letterSpacing: "-0.01em", mb: 1.75 }}>
+            <Box component={RouterLink} to={ROUTES.home} sx={{ display: "inline-block", lineHeight: 0, mb: 1.25 }}>
+              <Box component="img" src="/Icon.png" alt="RouteGenie" sx={{ height: 64, width: "auto", transition: "opacity 0.2s", "&:hover": { opacity: 0.8 } }} />
+            </Box>
+            <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: primary, fontSize: "2.2rem", lineHeight: 1, letterSpacing: "-0.01em", mb: 1.5 }}>
               RouteGenie
             </Typography>
             <Box sx={{ width: 40, height: "1px", background: `linear-gradient(to right, transparent, ${primary}BF, transparent)`, mx: "auto", mb: 1.75 }} />
@@ -368,15 +377,23 @@ export default function Signup() {
               <motion.div variants={fadeUp}>
                 <Typography sx={{ textAlign: "center", color: muteText, fontSize: "0.72rem", mt: 2.5, lineHeight: 1.6, opacity: 0.7 }}>
                   By continuing you agree to our{" "}
-                  <Box component="span" sx={{ cursor: "pointer", "&:hover": { color: primary }, transition: "color 0.2s" }}>Terms</Box>
+                  <Box component="span" onClick={() => setLegalModal("terms")} sx={{ cursor: "pointer", "&:hover": { color: primary }, transition: "color 0.2s" }}>Terms</Box>
                   {" "}and{" "}
-                  <Box component="span" sx={{ cursor: "pointer", "&:hover": { color: primary }, transition: "color 0.2s" }}>Privacy Policy</Box>
+                  <Box component="span" onClick={() => setLegalModal("privacy")} sx={{ cursor: "pointer", "&:hover": { color: primary }, transition: "color 0.2s" }}>Privacy Policy</Box>
                 </Typography>
               </motion.div>
             </motion.form>
           </motion.div>
         </Box>
       </Box>
+
+      {legalModal && (
+        <LegalModal
+          open={!!legalModal}
+          type={legalModal}
+          onClose={() => setLegalModal(null)}
+        />
+      )}
     </Box>
   );
 }

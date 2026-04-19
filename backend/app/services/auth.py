@@ -1,5 +1,7 @@
 from datetime import datetime, timezone, timedelta
+from uuid import uuid4
 
+from fastapi import HTTPException, status
 from jose import JWTError
 from redis.asyncio import Redis
 
@@ -14,6 +16,8 @@ from app.schemas.auth import (
     RegisterRequest, UserResponse, UserPreferencesResponse,
     UpdateProfileRequest, UpdatePreferencesRequest,
 )
+
+_RESET_TTL = 15 * 60  # 15 minutes in seconds
 
 
 def _to_user_response(user: User) -> UserResponse:
@@ -125,6 +129,38 @@ async def update_preferences(user: User, data: UpdatePreferencesRequest) -> User
             "updated_at": datetime.now(timezone.utc),
         })
     return user
+
+
+async def forgot_password(email: str, redis: Redis) -> None:
+    user = await User.find_one(User.email == email)
+    if not user or not user.is_active:
+        return  # silent — don't reveal whether email exists
+
+    token = str(uuid4())
+    await redis.setex(f"password:reset:{token}", _RESET_TTL, str(user.id))
+
+    from app.services.email import send_password_reset
+    await send_password_reset(user.email, user.name, token)
+
+
+async def reset_password(token: str, new_password: str, redis: Redis) -> None:
+    key = f"password:reset:{token}"
+    user_id = await redis.get(key)
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Reset link is invalid or has expired",
+        )
+
+    user = await User.get(user_id)
+    if not user or not user.is_active:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
+
+    await user.set({
+        "password_hash": hash_password(new_password),
+        "updated_at": datetime.now(timezone.utc),
+    })
+    await redis.delete(key)
 
 
 def build_token_response(user: User) -> dict:

@@ -2,20 +2,18 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import uuid4
 
+from bcrypt._bcrypt import hashpw, checkpw, gensalt  # bcrypt 5.x Rust extension
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return hashpw(password.encode(), gensalt(12)).decode()
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    return checkpw(plain.encode(), hashed.encode())
 
 
 def _create_token(data: dict[str, Any], expires_delta: timedelta) -> str:

@@ -74,6 +74,7 @@ export default function Login() {
   const { login: storeLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError]   = useState<string | null>(null);
+  const passwordReset = (location.state as { passwordReset?: boolean })?.passwordReset ?? false;
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -98,7 +99,7 @@ export default function Login() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel — always cinematic dark ───────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", borderRight: isDark ? "none" : "1px solid rgba(180,140,80,0.15)" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
@@ -111,19 +112,21 @@ export default function Login() {
         {/* Vignette + bottom dark + right edge fades to form panel */}
         <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.3) 40%, transparent 70%)" }} />
-        {/* Right edge blends seamlessly into form panel background */}
-        <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
+        {/* Right edge — seamless in dark, clean border in light */}
+        {isDark && (
+          <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
+        )}
 
         {/* Brand watermark */}
         <motion.div
-          style={{ position: "absolute", top: 32, left: 36 }}
+          style={{ position: "absolute", top: 28, left: 32 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: `${primary}CC`, fontSize: "1rem", letterSpacing: "0.05em" }}>
-            RouteGenie
-          </Typography>
+          <Box component={RouterLink} to={ROUTES.home} sx={{ display: "block", lineHeight: 0 }}>
+            <Box component="img" src="/Icon.png" alt="RouteGenie" sx={{ height: 40, width: "auto", filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.4))", transition: "opacity 0.2s", "&:hover": { opacity: 0.8 } }} />
+          </Box>
         </motion.div>
 
         {/* Editorial quote */}
@@ -161,6 +164,8 @@ export default function Login() {
         py:              6,
         backgroundColor: panelBg,
         position:        "relative",
+        boxShadow:       isDark ? "none" : "-12px 0 40px rgba(0,0,0,0.07)",
+        backgroundImage: isDark ? "none" : "radial-gradient(ellipse at 25% 20%, rgba(245,158,11,0.06) 0%, transparent 60%)",
       }}>
 
         {/* Theme toggle — top right of panel */}
@@ -177,7 +182,10 @@ export default function Login() {
             transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
             style={{ textAlign: "center", marginBottom: 44 }}
           >
-            <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: primary, fontSize: "2.6rem", lineHeight: 1, letterSpacing: "-0.01em", mb: 1.75 }}>
+            <Box component={RouterLink} to={ROUTES.home} sx={{ display: "inline-block", lineHeight: 0, mb: 1.5 }}>
+              <Box component="img" src="/Icon.png" alt="RouteGenie" sx={{ height: 64, width: "auto", transition: "opacity 0.2s", "&:hover": { opacity: 0.8 } }} />
+            </Box>
+            <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: primary, fontSize: "2.2rem", lineHeight: 1, letterSpacing: "-0.01em", mb: 1.75 }}>
               RouteGenie
             </Typography>
             <Box sx={{ width: 40, height: "1px", background: `linear-gradient(to right, transparent, ${primary}BF, transparent)`, mx: "auto", mb: 1.75 }} />
@@ -206,6 +214,13 @@ export default function Login() {
             </motion.div>
 
             <AnimatePresence>
+              {passwordReset && (
+                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                  <Alert severity="success" sx={{ mb: 2.5, borderRadius: "8px", fontSize: "0.85rem" }}>
+                    Password reset successfully. Sign in with your new password.
+                  </Alert>
+                </motion.div>
+              )}
               {serverError && (
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   <Alert severity="error" sx={{ mb: 2.5, borderRadius: "8px", fontSize: "0.85rem" }}>
@@ -275,8 +290,9 @@ export default function Login() {
               <motion.div variants={fadeUp}>
                 <Box sx={{ textAlign: "right", mb: 3.5 }}>
                   <Typography
-                    component="span"
-                    sx={{ color: muteText, fontSize: "0.8rem", cursor: "pointer", "&:hover": { color: primary }, transition: "color 0.2s" }}
+                    component={RouterLink}
+                    to={ROUTES.forgotPassword}
+                    sx={{ color: muteText, fontSize: "0.8rem", textDecoration: "none", "&:hover": { color: primary }, transition: "color 0.2s" }}
                   >
                     Forgot password?
                   </Typography>

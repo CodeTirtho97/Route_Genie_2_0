@@ -8,6 +8,7 @@ from app.schemas.auth import (
     RegisterRequest, LoginRequest, TokenResponse,
     UserResponse, UpdateProfileRequest, ChangePasswordRequest,
     UpdatePreferencesRequest, UserPreferencesResponse, RefreshRequest,
+    ForgotPasswordRequest, ResetPasswordRequest,
 )
 from app.schemas.common import ApiResponse, MessageResponse
 from app.services import auth as auth_service
@@ -92,3 +93,15 @@ async def update_preferences(
 ):
     user = await auth_service.update_preferences(current_user, data)
     return {"success": True, "data": UserPreferencesResponse(**user.preferences.model_dump())}
+
+
+@router.post("/forgot-password", response_model=MessageResponse)
+async def forgot_password(data: ForgotPasswordRequest, redis: Redis = Depends(get_redis)):
+    await auth_service.forgot_password(data.email, redis)
+    return {"success": True, "message": "If that email is registered, a reset link has been sent"}
+
+
+@router.post("/reset-password", response_model=MessageResponse)
+async def reset_password(data: ResetPasswordRequest, redis: Redis = Depends(get_redis)):
+    await auth_service.reset_password(data.token, data.new_password, redis)
+    return {"success": True, "message": "Password reset successfully"}
