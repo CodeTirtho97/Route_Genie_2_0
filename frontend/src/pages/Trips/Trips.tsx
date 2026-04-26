@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Box, Typography, Button, Chip, Skeleton, useTheme } from "@mui/material";
+import { Box, Typography, Button, Chip, Skeleton, TextField, InputAdornment, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { tripService } from "../../services/trip.service";
@@ -44,6 +44,11 @@ const UsersIcon = () => (
 const ArrowRightIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+  </svg>
+);
+const SearchIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
   </svg>
 );
 
@@ -181,6 +186,7 @@ export default function Trips() {
   const theme  = useTheme();
   const isDark = theme.palette.mode === "dark";
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [searchQuery,  setSearchQuery]  = useState("");
 
   const paper  = theme.palette.background.paper;
   const border = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)";
@@ -195,6 +201,15 @@ export default function Trips() {
   const trips = data?.data ?? [];
   const total = data?.total ?? 0;
 
+  const q = searchQuery.trim().toLowerCase();
+  const filteredTrips = q
+    ? trips.filter(t =>
+        t.title.toLowerCase().includes(q) ||
+        t.destination.toLowerCase().includes(q) ||
+        t.country.toLowerCase().includes(q)
+      )
+    : trips;
+
   return (
     <motion.div variants={staggerContainer} initial="hidden" animate="visible">
       <Box sx={{ p: { xs: 3, md: 4 }, maxWidth: 1200 }}>
@@ -207,7 +222,7 @@ export default function Trips() {
                 My Trips
               </Typography>
               <Typography sx={{ color: sub, fontSize: "0.875rem", fontFamily: "Plus Jakarta Sans, sans-serif" }}>
-                {isLoading ? "Loading…" : `${total} trip${total !== 1 ? "s" : ""}`}
+                {isLoading ? "Loading…" : q ? `${filteredTrips.length} of ${total} trip${total !== 1 ? "s" : ""}` : `${total} trip${total !== 1 ? "s" : ""}`}
               </Typography>
             </Box>
             <Button
@@ -236,15 +251,52 @@ export default function Trips() {
                     fontFamily:      "Plus Jakarta Sans, sans-serif",
                     fontSize:        "0.8rem",
                     fontWeight:      active ? 600 : 400,
-                    backgroundColor: active ? (isDark ? "rgba(245,158,11,0.15)" : "rgba(122,78,0,0.1)") : (isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)"),
+                    backgroundColor: active
+                      ? (isDark ? "#2A1F06" : "#E8D5A0")
+                      : paper,
                     color:           active ? pri : sub,
-                    border:          `1px solid ${active ? pri + "40" : border}`,
-                    "&:hover":       { backgroundColor: active ? undefined : (isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)") },
+                    border:          `1px solid ${active ? pri + "50" : border}`,
+                    "&:hover":       { backgroundColor: active ? undefined : (isDark ? "#1A1710" : "#EDE4D4") },
                   }}
                 />
               );
             })}
           </Box>
+        </motion.div>
+
+        {/* Search */}
+        <motion.div variants={fadeUp}>
+          <TextField
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by title, destination, or country…"
+            size="small"
+            fullWidth
+            sx={{
+              mb: 3.5,
+              "& .MuiOutlinedInput-root": {
+                fontFamily:      "Plus Jakarta Sans, sans-serif",
+                fontSize:        "0.875rem",
+                backgroundColor: paper,
+                borderRadius:    "10px",
+                "& fieldset":    { border: `1px solid ${border}` },
+                "&:hover fieldset":  { borderColor: pri + "60" },
+                "&.Mui-focused fieldset": { borderColor: pri },
+              },
+              "& input": { color: theme.palette.text.primary },
+            }}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Box sx={{ color: theme.palette.text.disabled, display: "flex", mt: "1px" }}>
+                      <SearchIcon />
+                    </Box>
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
         </motion.div>
 
         {/* Content */}
@@ -254,16 +306,16 @@ export default function Trips() {
               <Skeleton key={i} variant="rounded" height={280} sx={{ borderRadius: "16px", backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }} />
             ))}
           </Box>
-        ) : trips.length === 0 ? (
+        ) : filteredTrips.length === 0 ? (
           <Box sx={{ py: 8, textAlign: "center" }}>
-            <Box sx={{ fontSize: "3rem", mb: 2 }}>🗺️</Box>
+            <Box sx={{ fontSize: "3rem", mb: 2 }}>{q ? "🔍" : "🗺️"}</Box>
             <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: theme.palette.text.primary, fontSize: "1.4rem", mb: 1 }}>
-              {statusFilter ? `No ${statusFilter} trips` : "No trips yet"}
+              {q ? "No matching trips" : statusFilter ? `No ${statusFilter} trips` : "No trips yet"}
             </Typography>
             <Typography sx={{ color: sub, fontSize: "0.875rem", fontFamily: "Plus Jakarta Sans, sans-serif", mb: 3.5 }}>
-              {statusFilter ? "Try a different filter." : "Create your first trip to get started."}
+              {q ? "Try a different search term." : statusFilter ? "Try a different filter." : "Create your first trip to get started."}
             </Typography>
-            {!statusFilter && (
+            {!statusFilter && !q && (
               <Button component={RouterLink} to={ROUTES.tripCreate} variant="contained" startIcon={<PlusIcon />}>
                 Plan a trip
               </Button>
@@ -271,7 +323,7 @@ export default function Trips() {
           </Box>
         ) : (
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", lg: "repeat(3, 1fr)" }, gap: 2.5 }}>
-            {trips.map((trip) => (
+            {filteredTrips.map((trip) => (
               <TripCard key={trip.id} trip={trip} isDark={isDark} border={border} paper={paper} />
             ))}
           </Box>

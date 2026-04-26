@@ -3,10 +3,12 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import dayjs from "dayjs";
 import {
   Box, Typography, TextField, Button, Link, Alert,
   MenuItem, InputAdornment, IconButton, Grid, useTheme,
 } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { motion, AnimatePresence } from "framer-motion";
 import { authService } from "../../services/auth.service";
 import { useAuthStore } from "../../store/auth.store";
@@ -14,6 +16,7 @@ import { ThemeToggle } from "../../components/ui/ThemeToggle";
 import { LegalModal } from "../../components/ui/LegalModal";
 import { ROUTES } from "../../constants/routes";
 import { fadeUp, staggerContainer, buttonPress } from "../../theme/motion";
+import { usePexelsPhoto } from "../../hooks/usePexelsPhoto";
 
 const EyeIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -60,8 +63,6 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-const HERO_IMAGE = "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1400&q=90";
-
 const PERKS = [
   { heading: "Itinerary Builder with AI",  body: "Day-by-day plans generated in seconds"             },
   { heading: "Booking Tracker",       body: "Flights, hotels, and activities in one place"       },
@@ -77,6 +78,7 @@ export default function Signup() {
   const iconColor = isDark ? "#7A6B5A" : "#9A7E58";
   const muteText  = isDark ? "#7A6B5A" : "#8B6B40";
 
+  const { data: heroPhoto } = usePexelsPhoto("travel adventure wanderlust aerial beach");
   const navigate = useNavigate();
   const { login: storeLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
@@ -104,21 +106,19 @@ export default function Signup() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel — always cinematic dark ───────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", borderRight: isDark ? "none" : "1px solid rgba(180,140,80,0.15)" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "linear" }}
           style={{ position: "absolute", inset: 0 }}
         >
-          <Box component="img" src={HERO_IMAGE} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url_medium} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </motion.div>
 
         <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.3) 45%, transparent 70%)" }} />
-        {isDark && (
-          <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
-        )}
+        <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 50%, ${panelBg} 100%)` }} />
 
         {/* Brand watermark */}
         <motion.div
@@ -343,24 +343,32 @@ export default function Signup() {
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <TextField
-                  {...register("dob")}
-                  label="Date of birth"
-                  type="date"
-                  fullWidth
-                  error={!!errors.dob}
-                  helperText={errors.dob?.message}
-                  sx={{ mb: 3 }}
-                  slotProps={{
-                    inputLabel: { shrink: true },
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Box sx={{ color: iconColor, display: "flex", mt: "1px" }}><CalendarIcon /></Box>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
+                <Controller
+                  name="dob"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      label="Date of birth"
+                      value={field.value ? dayjs(field.value) : null}
+                      onChange={(val) => field.onChange(val ? val.format("YYYY-MM-DD") : "")}
+                      disableFuture
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.dob,
+                          helperText: errors.dob?.message,
+                          sx: { mb: 3 },
+                          InputProps: {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Box sx={{ color: iconColor, display: "flex", mt: "1px" }}><CalendarIcon /></Box>
+                              </InputAdornment>
+                            ),
+                          },
+                        },
+                      }}
+                    />
+                  )}
                 />
               </motion.div>
 

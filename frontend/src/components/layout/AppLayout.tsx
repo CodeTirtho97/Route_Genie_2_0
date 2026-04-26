@@ -1,8 +1,7 @@
 import { Link as RouterLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Box, Typography, Tooltip, IconButton, Avatar, useTheme } from "@mui/material";
-import { motion, AnimatePresence } from "framer-motion";
+import { Box, Typography, Tooltip, IconButton, Avatar, Button, useTheme } from "@mui/material";
+import { motion } from "framer-motion";
 import { ThemeToggle } from "../ui/ThemeToggle";
-import { useUIStore } from "../../store/ui.store";
 import { useAuthStore } from "../../store/auth.store";
 import { authService } from "../../services/auth.service";
 import { ROUTES } from "../../constants/routes";
@@ -28,29 +27,14 @@ const BookingsIcon = () => (
     <line x1="3" y1="10" x2="21" y2="10"/>
   </svg>
 );
-const AgentIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-  </svg>
-);
 const ProfileIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
     <circle cx="12" cy="7" r="4"/>
   </svg>
 );
-const ChevronLeftIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="15 18 9 12 15 6"/>
-  </svg>
-);
-const ChevronRightIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6"/>
-  </svg>
-);
 const LogoutIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
     <polyline points="16 17 21 12 16 7"/>
     <line x1="21" y1="12" x2="9" y2="12"/>
@@ -61,17 +45,33 @@ const NAV = [
   { label: "Dashboard", icon: DashboardIcon, path: ROUTES.dashboard },
   { label: "Trips",     icon: TripsIcon,     path: ROUTES.trips     },
   { label: "Bookings",  icon: BookingsIcon,  path: ROUTES.bookings  },
-  { label: "AI Agent",  icon: AgentIcon,     path: ROUTES.agent, badge: "Soon" },
   { label: "Profile",   icon: ProfileIcon,   path: ROUTES.profile   },
 ];
 
-const SIDEBAR_W  = 232;
-const SIDEBAR_IC = 68;
+const SIDEBAR_W = 240;
+
+function watermarkUrl(isDark: boolean): string {
+  const sc = isDark ? "white" : "black";
+  const so = isDark ? "0.07"  : "0.09";
+  const fc = isDark ? "white" : "black";
+  const fo = isDark ? "0.045" : "0.055";
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280">` +
+    `<defs><pattern id="p" width="280" height="280" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">` +
+    `<line x1="-560" y1="0" x2="840" y2="0" stroke="${sc}" stroke-opacity="${so}" stroke-width="0.75"/>` +
+    `<text x="140" y="50" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" letter-spacing="5" fill="${fc}" fill-opacity="${fo}">RouteGenie</text>` +
+    `<line x1="-560" y1="93" x2="840" y2="93" stroke="${sc}" stroke-opacity="${so}" stroke-width="0.75"/>` +
+    `<line x1="-560" y1="186" x2="840" y2="186" stroke="${sc}" stroke-opacity="${so}" stroke-width="0.75"/>` +
+    `<text x="140" y="237" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" letter-spacing="5" fill="${fc}" fill-opacity="${fo}">RouteGenie</text>` +
+    `</pattern></defs>` +
+    `<rect width="280" height="280" fill="url(#p)"/>` +
+    `</svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
 
 export default function AppLayout() {
   const theme   = useTheme();
   const isDark  = theme.palette.mode === "dark";
-  const { sidebarOpen, toggleSidebar } = useUIStore();
   const { user, accessToken, logout }  = useAuthStore();
   const navigate  = useNavigate();
   const location  = useLocation();
@@ -82,7 +82,6 @@ export default function AppLayout() {
   const pri     = theme.palette.primary.main;
   const txt     = theme.palette.text.primary;
   const sub     = theme.palette.text.secondary;
-  const width   = sidebarOpen ? SIDEBAR_W : SIDEBAR_IC;
 
   const initials = user?.name
     ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
@@ -101,7 +100,7 @@ export default function AppLayout() {
       <Box
         component="nav"
         sx={{
-          width,
+          width:           SIDEBAR_W,
           flexShrink:      0,
           position:        "fixed",
           top: 0, left: 0, bottom: 0,
@@ -109,50 +108,53 @@ export default function AppLayout() {
           borderRight:     `1px solid ${border}`,
           display:         "flex",
           flexDirection:   "column",
-          transition:      "width 0.22s ease",
           overflow:        "hidden",
           zIndex:          200,
         }}
       >
-        {/* Logo */}
+        {/* ── User profile ────────────────────────────────── */}
         <Box
-          component={RouterLink}
-          to={ROUTES.dashboard}
           sx={{
-            display:         "flex",
-            alignItems:      "center",
-            gap:             1.25,
-            px:              sidebarOpen ? 2.5 : 1.5,
-            py:              2.25,
-            textDecoration:  "none",
-            borderBottom:    `1px solid ${border}`,
-            flexShrink:      0,
-            minHeight:       64,
+            display:        "flex",
+            flexDirection:  "row",
+            alignItems:     "center",
+            gap:            1.5,
+            px:             2.25,
+            pt:             3,
+            pb:             2,
+            borderBottom:   `1px solid ${border}`,
+            flexShrink:     0,
           }}
         >
-          <Box component="img" src="/Icon.png" alt="RouteGenie" sx={{ height: 32, width: "auto", flexShrink: 0 }} />
-          <AnimatePresence>
-            {sidebarOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -8 }}
-                transition={{ duration: 0.15 }}
-                style={{ overflow: "hidden", whiteSpace: "nowrap" }}
-              >
-                <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: pri, fontSize: "1.1rem", lineHeight: 1 }}>
-                  RouteGenie
-                </Typography>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <Avatar
+            src={(user as any)?.avatar_url ?? undefined}
+            sx={{
+              width:           40,
+              height:          40,
+              fontSize:        "0.85rem",
+              fontWeight:      700,
+              backgroundColor: isDark ? "rgba(245,158,11,0.18)" : "rgba(122,78,0,0.15)",
+              color:           pri,
+              flexShrink:      0,
+            }}
+          >
+            {initials}
+          </Avatar>
+          <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Typography sx={{ fontSize: "0.875rem", fontWeight: 700, color: txt, fontFamily: "Plus Jakarta Sans, sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {user?.name ?? "User"}
+            </Typography>
+            <Typography sx={{ fontSize: "0.7rem", color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {user?.email ?? ""}
+            </Typography>
+          </Box>
         </Box>
 
-        {/* Nav items */}
+        {/* ── Nav items ────────────────────────────────────── */}
         <Box sx={{ flex: 1, py: 1.5, overflowY: "auto", overflowX: "hidden" }}>
-          {NAV.map(({ label, icon: Icon, path, badge }) => {
+          {NAV.map(({ label, icon: Icon, path }) => {
             const active = location.pathname === path || location.pathname.startsWith(path + "/");
-            const item = (
+            return (
               <Box
                 key={label}
                 component={RouterLink}
@@ -161,7 +163,7 @@ export default function AppLayout() {
                   display:        "flex",
                   alignItems:     "center",
                   gap:            1.5,
-                  px:             sidebarOpen ? 2.5 : 1.75,
+                  px:             2.5,
                   py:             1.1,
                   mx:             1,
                   borderRadius:   "10px",
@@ -180,7 +182,6 @@ export default function AppLayout() {
                   position: "relative",
                 }}
               >
-                {/* Active indicator bar */}
                 {active && (
                   <Box sx={{
                     position: "absolute", left: 0, top: "20%", bottom: "20%",
@@ -189,120 +190,70 @@ export default function AppLayout() {
                   }} />
                 )}
                 <Box sx={{ flexShrink: 0, display: "flex" }}><Icon /></Box>
-                <AnimatePresence>
-                  {sidebarOpen && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.12 }}
-                      style={{ display: "flex", alignItems: "center", gap: 8, overflow: "hidden", whiteSpace: "nowrap" }}
-                    >
-                      <Typography sx={{ fontSize: "0.875rem", fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: active ? 600 : 400 }}>
-                        {label}
-                      </Typography>
-                      {badge && (
-                        <Box sx={{ px: 0.75, py: 0.15, borderRadius: "4px", backgroundColor: isDark ? "rgba(245,158,11,0.15)" : "rgba(122,78,0,0.1)", fontSize: "0.6rem", color: pri, fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 600, letterSpacing: "0.04em" }}>
-                          {badge}
-                        </Box>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  style={{ display: "flex", alignItems: "center", overflow: "hidden", whiteSpace: "nowrap" }}
+                >
+                  <Typography sx={{ fontSize: "0.875rem", fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: active ? 600 : 400 }}>
+                    {label}
+                  </Typography>
+                </motion.div>
               </Box>
-            );
-
-            return sidebarOpen ? item : (
-              <Tooltip key={label} title={label} placement="right">
-                {item}
-              </Tooltip>
             );
           })}
         </Box>
 
-        {/* Footer: theme toggle + user + logout */}
-        <Box sx={{ flexShrink: 0, borderTop: `1px solid ${border}`, p: sidebarOpen ? "12px 16px" : "12px 8px" }}>
+        {/* ── Footer ───────────────────────────────────────── */}
+        <Box sx={{ flexShrink: 0, borderTop: `1px solid ${border}`, p: "12px 14px" }}>
+
           {/* Theme toggle row */}
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: sidebarOpen ? "space-between" : "center", mb: 1.5 }}>
-            {sidebarOpen && (
-              <Typography sx={{ fontSize: "0.72rem", color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                Appearance
-              </Typography>
-            )}
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
+            <Typography sx={{ fontSize: "0.75rem", color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 500 }}>
+              {isDark ? "Switch to Light" : "Switch to Dark"}
+            </Typography>
             <ThemeToggle />
           </Box>
 
-          {/* User row */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, mb: 1 }}>
-            <Avatar sx={{ width: 32, height: 32, fontSize: "0.75rem", fontWeight: 700, backgroundColor: isDark ? "rgba(245,158,11,0.18)" : "rgba(122,78,0,0.15)", color: pri, flexShrink: 0 }}>
-              {initials}
-            </Avatar>
-            <AnimatePresence>
-              {sidebarOpen && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.12 }} style={{ flex: 1, overflow: "hidden", minWidth: 0 }}>
-                  <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, color: txt, fontFamily: "Plus Jakarta Sans, sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {user?.name}
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.7rem", color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {user?.email}
-                  </Typography>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {sidebarOpen && (
-              <Tooltip title="Log out" placement="top">
-                <IconButton onClick={handleLogout} size="small" sx={{ color: sub, flexShrink: 0, "&:hover": { color: theme.palette.error.main } }}>
-                  <LogoutIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Box>
-
-          {/* Collapsed logout */}
-          {!sidebarOpen && (
-            <Tooltip title="Log out" placement="right">
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <IconButton onClick={handleLogout} size="small" sx={{ color: sub, "&:hover": { color: theme.palette.error.main } }}>
-                  <LogoutIcon />
-                </IconButton>
-              </Box>
-            </Tooltip>
-          )}
-        </Box>
-
-        {/* Collapse toggle button */}
-        <Tooltip title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"} placement="right">
-          <IconButton
-            onClick={toggleSidebar}
-            size="small"
+          {/* Logout */}
+          <Button
+            onClick={handleLogout}
+            fullWidth
+            startIcon={<LogoutIcon />}
             sx={{
-              position:        "absolute",
-              top:             72,
-              right:           -12,
-              width:           24,
-              height:          24,
-              backgroundColor: sbBg,
-              border:          `1px solid ${border}`,
-              color:           sub,
-              "&:hover":       { color: pri, backgroundColor: sbBg },
-              zIndex:          10,
+              justifyContent:  "flex-start",
+              fontFamily:      "Plus Jakarta Sans, sans-serif",
+              fontSize:        "0.85rem",
+              fontWeight:      600,
+              color:           theme.palette.error.main,
+              border:          `1px solid ${isDark ? "rgba(239,68,68,0.2)" : "rgba(220,38,38,0.2)"}`,
+              borderRadius:    "10px",
+              py:              0.9,
+              px:              1.75,
+              textTransform:   "none",
+              transition:      "all 0.15s",
+              "&:hover": {
+                backgroundColor: isDark ? "rgba(239,68,68,0.1)" : "rgba(220,38,38,0.07)",
+                borderColor:     theme.palette.error.main,
+              },
             }}
           >
-            {sidebarOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </Tooltip>
+            Log Out
+          </Button>
+        </Box>
       </Box>
 
       {/* ── Page content ─────────────────────────────────── */}
       <Box
         component="main"
         sx={{
-          flex:       1,
-          ml:         `${width}px`,
-          minHeight:  "100vh",
-          transition: "margin-left 0.22s ease",
-          display:    "flex",
-          flexDirection: "column",
+          flex:            1,
+          ml:              `${SIDEBAR_W}px`,
+          minHeight:       "100vh",
+          display:         "flex",
+          flexDirection:   "column",
+          backgroundColor: bg,
+          backgroundImage: watermarkUrl(isDark),
         }}
       >
         <Outlet />

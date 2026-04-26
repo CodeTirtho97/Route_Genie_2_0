@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -26,7 +27,9 @@
     "axios": "^1.15.0",
     "dayjs": "^1.11.20",
     "framer-motion": "^12.38.0",
+    "js-yaml": "^4.1.1",
     "leaflet": "^1.9.4",
+    "lucide-react": "^1.11.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.72.1",

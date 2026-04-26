@@ -15,6 +15,9 @@ const Dashboard      = lazy(() => import("../pages/Dashboard/Dashboard"));
 const Trips          = lazy(() => import("../pages/Trips/Trips"));
 const TripCreate     = lazy(() => import("../pages/Trips/TripCreate"));
 const TripDetail     = lazy(() => import("../pages/Trips/TripDetail"));
+const TripEdit       = lazy(() => import("../pages/Trips/TripEdit"));
+const Bookings       = lazy(() => import("../pages/Bookings/Bookings"));
+const Profile        = lazy(() => import("../pages/Profile/Profile"));
 
 const Loader = () => (
   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
@@ -41,6 +44,9 @@ export const router = createBrowserRouter([
       { path: ROUTES.trips,      element: wrap(<Trips />) },
       { path: ROUTES.tripCreate, element: wrap(<TripCreate />) },
       { path: ROUTES.tripDetail(), element: wrap(<TripDetail />) },
+      { path: ROUTES.tripEdit(),   element: wrap(<TripEdit />) },
+      { path: ROUTES.bookings,   element: wrap(<Bookings />) },
+      { path: ROUTES.profile,   element: wrap(<Profile />) },
     ],
   },
 

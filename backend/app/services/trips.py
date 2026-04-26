@@ -28,6 +28,7 @@ def _to_response(trip: Itinerary) -> TripResponse:
         cover_image_url=trip.cover_image_url,
         tags=trip.tags,
         status=trip.status,
+        notes=trip.notes,
         ai_generated=trip.ai_generated,
         duration_days=_duration(trip.start_date, trip.end_date),
         days_count=len(trip.days),

@@ -24,7 +24,7 @@ const TECH_STACK = [
   {
     category: "AI & Data",
     color:    "#F59E0B",
-    items:    ["LangGraph", "Groq API", "Llama 3.3 70B", "OpenWeatherMap", "Exchange Rate API", "Unsplash"],
+    items:    ["LangGraph", "Groq API", "Llama 3.3 70B", "OpenWeatherMap", "Exchange Rate API", "Pexels"],
   },
   {
     category: "Infrastructure",

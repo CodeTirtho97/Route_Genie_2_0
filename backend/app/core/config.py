@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
 
     # External APIs
-    UNSPLASH_ACCESS_KEY: str = ""
+    PEXELS_API_KEY: str = ""
 
     # Server
     ALLOWED_ORIGINS: str = "http://localhost:5173"

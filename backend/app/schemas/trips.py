@@ -62,6 +62,7 @@ class TripUpdate(BaseModel):
     cover_image_url: str | None = None
     tags: list[str] | None = None
     status: TripStatus | None = None
+    notes: str | None = None
 
 
 class TripResponse(BaseModel):
@@ -79,6 +80,7 @@ class TripResponse(BaseModel):
     cover_image_url: str | None
     tags: list[str]
     status: str
+    notes: str | None
     ai_generated: bool
     duration_days: int
     days_count: int

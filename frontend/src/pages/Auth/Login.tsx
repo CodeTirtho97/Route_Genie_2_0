@@ -13,6 +13,9 @@ import { useAuthStore } from "../../store/auth.store";
 import { ThemeToggle } from "../../components/ui/ThemeToggle";
 import { ROUTES } from "../../constants/routes";
 import { fadeUp, staggerContainer, buttonPress } from "../../theme/motion";
+import { usePexelsPhoto } from "../../hooks/usePexelsPhoto";
+import yaml from "js-yaml";
+import quotesRaw from "../../data/travel-quotes.yaml?raw";
 
 const EyeIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -44,8 +47,6 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-const HERO_IMAGE = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&q=90";
-
 const STATS = [
   { value: "10k+", label: "Trips planned" },
   { value: "50+",  label: "Countries"    },
@@ -68,6 +69,14 @@ export default function Login() {
   const statGlow     = isDark
     ? "0 0 18px rgba(245,158,11,0.14), 0 1px 0 rgba(245,158,11,0.08) inset"
     : "0 0 14px rgba(122,78,0,0.1),   0 1px 0 rgba(122,78,0,0.06) inset";
+
+  const { data: heroPhoto } = usePexelsPhoto("venice canal italy gondola travel aerial");
+
+  const [quote] = useState<{ text: string; author: string }>(() => {
+    const data = yaml.load(quotesRaw) as { quotes: Array<{ text: string; author: string }> };
+    const list = data.quotes;
+    return list[Math.floor(Math.random() * list.length)];
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -99,23 +108,21 @@ export default function Login() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel — always cinematic dark ───────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", borderRight: isDark ? "none" : "1px solid rgba(180,140,80,0.15)" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "linear" }}
           style={{ position: "absolute", inset: 0 }}
         >
-          <Box component="img" src={HERO_IMAGE} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url_medium} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </motion.div>
 
         {/* Vignette + bottom dark + right edge fades to form panel */}
         <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.3) 40%, transparent 70%)" }} />
-        {/* Right edge — seamless in dark, clean border in light */}
-        {isDark && (
-          <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
-        )}
+        {/* Right edge — seamless blend to form panel in both modes */}
+        <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 50%, ${panelBg} 100%)` }} />
 
         {/* Brand watermark */}
         <motion.div
@@ -140,14 +147,14 @@ export default function Login() {
             <Typography sx={{
               fontFamily: '"DM Serif Display", serif',
               color:      "rgba(237,232,223,0.9)",
-              fontSize:   "1.1rem",
+              fontSize:   "1.05rem",
               lineHeight: 1.65,
               mb:         1.25,
             }}>
-              "The world is a book, and those who do not travel read only one page."
+              "{quote.text}"
             </Typography>
             <Typography sx={{ color: "rgba(168,146,122,0.65)", fontSize: "0.73rem", fontFamily: "Plus Jakarta Sans, sans-serif", letterSpacing: "0.07em", textTransform: "uppercase" }}>
-              Saint Augustine
+              {quote.author}
             </Typography>
           </Box>
         </motion.div>

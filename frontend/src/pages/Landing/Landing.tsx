@@ -3,6 +3,7 @@ import { Box, Typography, Button, Container, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { ThemeToggle } from "../../components/ui/ThemeToggle";
 import { ROUTES } from "../../constants/routes";
+import { usePexelsPhoto } from "../../hooks/usePexelsPhoto";
 
 // ── Inline SVG icons ─────────────────────────────────────────
 const SparkleIcon = () => (
@@ -71,9 +72,6 @@ const STATS = [
   { value: "< 30s", label: "Itinerary in"       },
 ];
 
-const HERO_IMAGE  = "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=85";
-const CTA_IMAGE   = "https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1400&q=80";
-
 // ── Helpers ───────────────────────────────────────────────────
 const reveal = (delay = 0) => ({
   initial:    { opacity: 0, y: 28 },
@@ -91,6 +89,9 @@ export default function Landing() {
   const pri    = theme.palette.primary.main;
   const txt    = theme.palette.text.primary;
   const sub    = theme.palette.text.secondary;
+
+  const { data: heroPhoto } = usePexelsPhoto("aerial travel landscape mountains adventure");
+  const { data: ctaPhoto  } = usePexelsPhoto("travel road journey freedom wanderlust");
 
   // Section alternating background
   const altBg  = isDark ? "#0F0D09" : "#F5EFE4";
@@ -175,7 +176,7 @@ export default function Landing() {
           transition={{ duration: 12, ease: "linear" }}
           style={{ position: "absolute", inset: 0, zIndex: 0 }}
         >
-          <Box component="img" src={HERO_IMAGE} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url ?? ""} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </motion.div>
 
         {/* Overlays — base dark wash first, then directional gradients */}
@@ -400,7 +401,7 @@ export default function Landing() {
           textAlign:  "center",
         }}
       >
-        <Box component="img" src={CTA_IMAGE} alt="" sx={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        <Box component="img" src={ctaPhoto?.url ?? ""} alt="" sx={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "rgba(13,11,8,0.82)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 50%, ${isDark ? "rgba(245,158,11,0.12)" : "rgba(245,158,11,0.18)"} 0%, transparent 65%)` }} />
 

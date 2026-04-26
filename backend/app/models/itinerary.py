@@ -43,6 +43,7 @@ class Itinerary(Document):
     days: list[Day] = []
     tags: list[str] = []
     status: Literal["planned", "ongoing", "completed", "cancelled"] = "planned"
+    notes: str | None = None
     ai_generated: bool = False
     agent_session_id: str | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

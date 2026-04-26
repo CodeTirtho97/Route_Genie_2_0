@@ -1,6 +1,8 @@
 import { ReactNode, useMemo } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createAppTheme } from "../theme";
 import { useUIStore } from "../store/ui.store";
 
@@ -20,10 +22,12 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </LocalizationProvider>
     </QueryClientProvider>
   );
 }

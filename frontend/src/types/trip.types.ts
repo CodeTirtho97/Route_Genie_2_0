@@ -22,6 +22,7 @@ export interface TripListItem {
 
 export interface TripResponse extends TripListItem {
   user_id: string;
+  notes: string | null;
   days_count: number;
   updated_at: string;
 }
@@ -53,4 +54,5 @@ export interface TripUpdate {
   cover_image_url?: string;
   tags?: string[];
   status?: TripStatus;
+  notes?: string;
 }

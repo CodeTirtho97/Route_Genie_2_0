@@ -57,7 +57,7 @@ RouteGenie_2_0/
 
 ---
 
-## Local Setup
+## Running Locally
 
 ### Prerequisites
 
@@ -66,45 +66,61 @@ RouteGenie_2_0/
 - MongoDB Atlas account (free M0 tier)
 - Upstash Redis account (free tier, TLS enabled)
 
-### Backend
+---
+
+### 1 — Backend (FastAPI)
 
 ```bash
 cd backend
 
-# Install dependencies
-python -m uv sync
+# Install dependencies with uv
+uv sync
 
-# Create .env (see Backend Environment below)
-cp .env.example .env   # then fill in your keys
+# Copy the example env and fill in your credentials
+cp .env.example .env
 
-# Start dev server
-python -m uv run uvicorn app.main:app --reload --port 8000
+# Start the dev server (auto-reloads on file save)
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
-**Backend Environment** (`backend/.env`):
+> The API will be live at **http://localhost:8000**
+
+**Required environment variables** (`backend/.env`):
 
 ```env
+# Database
 MONGODB_URL=mongodb+srv://<user>:<pass>@cluster.mongodb.net/?appName=RouteGenie
 MONGODB_DB_NAME=RouteGenie
 
+# Cache / rate-limit (Upstash Redis — TLS URL)
 REDIS_URL=rediss://default:<token>@<host>:6379
 
+# Auth
 JWT_SECRET=<32+ char random string>
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=15
 REFRESH_TOKEN_EXPIRE_DAYS=7
 
+# Email (Resend)
+RESEND_API_KEY=<your resend key>
+APP_URL=http://localhost:5173/
+
+# AI (Groq — free tier)
 GROQ_API_KEY=<your groq key>
 GROQ_MODEL=llama-3.3-70b-versatile
 
+# Photos (Unsplash)
 UNSPLASH_ACCESS_KEY=<your unsplash key>
 
+# CORS
 ALLOWED_ORIGINS=http://localhost:5173
 ENVIRONMENT=development
 LOG_LEVEL=INFO
 ```
 
-### Frontend
+---
+
+### 2 — Frontend (React + Vite)
 
 ```bash
 cd frontend
@@ -112,19 +128,33 @@ cd frontend
 # Install dependencies
 pnpm install
 
-# Create .env
+# Create the env file
 echo "VITE_API_BASE_URL=http://localhost:8000/api/v1" > .env
 
-# Start dev server
+# Start the dev server (hot module replacement enabled)
 pnpm dev
 ```
 
-### Health check
+> The app will be live at **http://localhost:5173**
 
-Once both servers are running, visit:
-- API docs: [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
-- Health: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
-- Frontend: [http://localhost:5173](http://localhost:5173)
+**Frontend environment variables** (`frontend/.env`):
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api/v1
+VITE_UNSPLASH_ACCESS_KEY=<your unsplash key>   # optional — for cover image search
+VITE_MAP_TILE_URL=https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png
+```
+
+---
+
+### 3 — Verify everything is running
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| API (health) | http://localhost:8000/api/v1/health |
+| Swagger docs | http://localhost:8000/api/docs |
+| ReDoc | http://localhost:8000/api/redoc |
 
 ---
 

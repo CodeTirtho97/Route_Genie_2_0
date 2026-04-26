@@ -12,6 +12,7 @@ import { authService } from "../../services/auth.service";
 import { ThemeToggle } from "../../components/ui/ThemeToggle";
 import { ROUTES } from "../../constants/routes";
 import { fadeUp, staggerContainer, buttonPress } from "../../theme/motion";
+import { usePexelsPhoto } from "../../hooks/usePexelsPhoto";
 
 const EyeIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -48,14 +49,12 @@ const schema = z
   });
 type FormData = z.infer<typeof schema>;
 
-// Sunrise breaking through trees — "fresh start / new beginning"
-const HERO_IMAGE = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1400&q=90";
-
 export default function ResetPassword() {
   const theme   = useTheme();
   const isDark  = theme.palette.mode === "dark";
   const panelBg = theme.palette.background.default;
   const primary = theme.palette.primary.main;
+  const { data: heroPhoto } = usePexelsPhoto("sunrise ocean horizon golden dawn travel");
 
   const iconColor = isDark ? "#7A6B5A" : "#9A7E58";
   const muteText  = isDark ? "#7A6B5A" : "#8B6B40";
@@ -89,21 +88,19 @@ export default function ResetPassword() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel ───────────────────────────────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", borderRight: isDark ? "none" : "1px solid rgba(180,140,80,0.15)" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "linear" }}
           style={{ position: "absolute", inset: 0 }}
         >
-          <Box component="img" src={HERO_IMAGE} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url_medium} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </motion.div>
 
         <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.3) 40%, transparent 70%)" }} />
-        {isDark && (
-          <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 55%, ${panelBg} 100%)` }} />
-        )}
+        <Box sx={{ position: "absolute", inset: 0, background: `linear-gradient(to right, transparent 50%, ${panelBg} 100%)` }} />
 
         <motion.div
           style={{ position: "absolute", top: 28, left: 32 }}

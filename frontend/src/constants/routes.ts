@@ -9,7 +9,7 @@ export const ROUTES = {
   trips:          "/trips",
   tripCreate:     "/trips/new",
   tripDetail:     (id = ":id") => `/trips/${id}`,
+  tripEdit:       (id = ":id") => `/trips/${id}/edit`,
   bookings:       "/bookings",
-  agent:          "/agent",
   profile:        "/profile",
 } as const;
