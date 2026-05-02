@@ -347,10 +347,12 @@ export default function TripEdit() {
           component={RouterLink}
           to={ROUTES.trips}
           startIcon={<ArrowLeftIcon />}
+          disableRipple
           sx={{
             color: sub,
+            "&:hover": { backgroundColor: "transparent" },
             "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
-            "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+            "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.8s ease-in-out infinite" },
           }}
         >Back to trips</Button>
       </Box>
@@ -370,10 +372,11 @@ export default function TripEdit() {
             sx={{
               color: sub, fontSize: "0.8rem", textTransform: "none",
               fontFamily: "Plus Jakarta Sans, sans-serif", mb: 3, pl: 0,
-              "&:hover": { color: pri },
+              "&:hover": { color: pri, backgroundColor: "transparent" },
               "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
-              "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+              "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.8s ease-in-out infinite" },
             }}
+            disableRipple
           >
             Back to trip
           </Button>

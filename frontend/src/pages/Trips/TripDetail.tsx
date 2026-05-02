@@ -423,10 +423,12 @@ export default function TripDetail() {
           component={RouterLink}
           to={ROUTES.trips}
           startIcon={<ArrowLeft size={15} />}
+          disableRipple
           sx={{
             color: sub,
+            "&:hover": { backgroundColor: "transparent" },
             "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
-            "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+            "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.8s ease-in-out infinite" },
           }}
         >Back to trips</Button>
       </Box>
@@ -463,7 +465,7 @@ export default function TripDetail() {
                 transition: "color 0.15s",
                 "&:hover": { color: pri },
                 "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
-                "&:hover .back-arrow": { animation: "arrowBlink 0.6s step-start infinite" },
+                "&:hover .back-arrow": { animation: "arrowBlink 0.8s ease-in-out infinite" },
               }}
             >
               <Box component="span" className="back-arrow" sx={{ display: "inline-flex", alignItems: "center" }}>
