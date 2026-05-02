@@ -14,6 +14,7 @@ export interface BookingListItem {
   currency: string;
   status: BookingStatus;
   confirmation_number: string | null;
+  notes: string | null;
   is_past: boolean;
   created_at: string;
 }

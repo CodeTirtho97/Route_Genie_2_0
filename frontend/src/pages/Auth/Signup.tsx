@@ -358,12 +358,14 @@ export default function Signup() {
                           error: !!errors.dob,
                           helperText: errors.dob?.message,
                           sx: { mb: 3 },
-                          InputProps: {
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Box sx={{ color: iconColor, display: "flex", mt: "1px" }}><CalendarIcon /></Box>
-                              </InputAdornment>
-                            ),
+                          slotProps: {
+                            input: {
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Box sx={{ color: iconColor, display: "flex", mt: "1px" }}><CalendarIcon /></Box>
+                                </InputAdornment>
+                              ),
+                            },
                           },
                         },
                       }}

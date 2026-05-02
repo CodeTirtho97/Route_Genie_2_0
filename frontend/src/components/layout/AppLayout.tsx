@@ -82,6 +82,7 @@ export default function AppLayout() {
   const pri     = theme.palette.primary.main;
   const txt     = theme.palette.text.primary;
   const sub     = theme.palette.text.secondary;
+  const isDemo  = user?.email === "demo@routegenie.app";
 
   const initials = user?.name
     ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
@@ -206,6 +207,47 @@ export default function AppLayout() {
 
         {/* ── Footer ───────────────────────────────────────── */}
         <Box sx={{ flexShrink: 0, borderTop: `1px solid ${border}`, p: "12px 14px" }}>
+
+          {/* Demo badge */}
+          {isDemo && (
+            <Box sx={{
+              mb: 1.5, p: "10px 12px",
+              borderRadius: "10px",
+              border: `1px solid ${isDark ? "rgba(245,158,11,0.22)" : "rgba(122,78,0,0.22)"}`,
+              backgroundColor: isDark ? "rgba(245,158,11,0.06)" : "rgba(245,158,11,0.05)",
+            }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 0.5 }}>
+                <Box sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: pri, flexShrink: 0 }} />
+                <Typography sx={{ fontSize: "0.65rem", fontWeight: 700, color: pri, fontFamily: "Plus Jakarta Sans, sans-serif", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  Demo mode
+                </Typography>
+              </Box>
+              <Typography sx={{ fontSize: "0.7rem", color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", mb: 1, lineHeight: 1.5 }}>
+                Browsing as demo. Sign up to plan your own trips.
+              </Typography>
+              <Button
+                component={RouterLink}
+                to={ROUTES.signup}
+                variant="outlined"
+                fullWidth
+                size="small"
+                sx={{
+                  fontSize: "0.72rem",
+                  fontFamily: "Plus Jakarta Sans, sans-serif",
+                  textTransform: "none",
+                  py: 0.5,
+                  borderColor: isDark ? "rgba(245,158,11,0.4)" : "rgba(122,78,0,0.4)",
+                  color: pri,
+                  "&:hover": {
+                    borderColor: pri,
+                    backgroundColor: isDark ? "rgba(245,158,11,0.1)" : "rgba(122,78,0,0.07)",
+                  },
+                }}
+              >
+                Create free account →
+              </Button>
+            </Box>
+          )}
 
           {/* Theme toggle row */}
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>

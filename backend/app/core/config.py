@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # External APIs
     PEXELS_API_KEY: str = ""
 
+    # Demo
+    DEMO_EMAIL: str = "demo@routegenie.app"
+
     # Server
     ALLOWED_ORIGINS: str = "http://localhost:5173"
     ENVIRONMENT: str = "development"

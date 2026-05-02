@@ -45,6 +45,7 @@ def _to_list_item(b: Booking) -> BookingListItem:
         currency=b.currency,
         status=b.status.value,
         confirmation_number=b.confirmation_number,
+        notes=b.notes,
         is_past=b.is_past,
         created_at=b.created_at,
     )

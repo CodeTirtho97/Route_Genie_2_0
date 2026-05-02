@@ -81,5 +81,6 @@ class BookingListItem(BaseModel):
     currency: str
     status: str
     confirmation_number: str | None
+    notes: str | None
     is_past: bool
     created_at: datetime

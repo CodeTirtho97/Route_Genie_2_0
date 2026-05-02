@@ -419,7 +419,16 @@ export default function TripDetail() {
     return (
       <Box sx={{ p: 4 }}>
         <Alert severity="error" sx={{ borderRadius: "12px", mb: 2 }}>Trip not found or you don't have access.</Alert>
-        <Button component={RouterLink} to={ROUTES.trips} startIcon={<ArrowLeft size={15} />} sx={{ color: sub }}>Back to trips</Button>
+        <Button
+          component={RouterLink}
+          to={ROUTES.trips}
+          startIcon={<ArrowLeft size={15} />}
+          sx={{
+            color: sub,
+            "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
+            "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+          }}
+        >Back to trips</Button>
       </Box>
     );
   }
@@ -453,11 +462,8 @@ export default function TripDetail() {
                 fontSize: "0.8rem", fontFamily: "Plus Jakarta Sans, sans-serif",
                 transition: "color 0.15s",
                 "&:hover": { color: pri },
-                "@keyframes arrowNudge": {
-                  "0%, 100%": { transform: "translateX(0)" },
-                  "50%": { transform: "translateX(-4px)" },
-                },
-                "&:hover .back-arrow": { animation: "arrowNudge 0.7s ease-in-out infinite" },
+                "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
+                "&:hover .back-arrow": { animation: "arrowBlink 0.6s step-start infinite" },
               }}
             >
               <Box component="span" className="back-arrow" sx={{ display: "inline-flex", alignItems: "center" }}>

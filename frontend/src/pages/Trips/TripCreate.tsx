@@ -575,7 +575,13 @@ export default function TripCreate() {
             component={RouterLink}
             to={ROUTES.trips}
             startIcon={<ArrowLeftIcon />}
-            sx={{ color: sub, fontSize: "0.8rem", textTransform: "none", fontFamily: "Plus Jakarta Sans, sans-serif", mb: 3, pl: 0, "&:hover": { color: pri } }}
+            sx={{
+              color: sub, fontSize: "0.8rem", textTransform: "none",
+              fontFamily: "Plus Jakarta Sans, sans-serif", mb: 3, pl: 0,
+              "&:hover": { color: pri },
+              "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
+              "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+            }}
           >
             Back to trips
           </Button>

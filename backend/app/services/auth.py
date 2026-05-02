@@ -92,7 +92,7 @@ async def refresh_tokens(refresh_token: str, redis: Redis) -> tuple[str, str]:
     # Invalidate old refresh token
     await logout(refresh_token, redis)
 
-    return create_access_token(str(user.id)), create_refresh_token(str(user.id))
+    return create_access_token(str(user.id), user.email), create_refresh_token(str(user.id))
 
 
 async def get_user_by_id(user_id: str) -> User:
@@ -165,7 +165,7 @@ async def reset_password(token: str, new_password: str, redis: Redis) -> None:
 
 def build_token_response(user: User) -> dict:
     return {
-        "access_token": create_access_token(str(user.id)),
+        "access_token": create_access_token(str(user.id), user.email),
         "refresh_token": create_refresh_token(str(user.id)),
         "token_type": "bearer",
         "user": _to_user_response(user),

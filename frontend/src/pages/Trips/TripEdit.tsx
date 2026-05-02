@@ -343,7 +343,16 @@ export default function TripEdit() {
     return (
       <Box sx={{ p: 4 }}>
         <Alert severity="error" sx={{ borderRadius: "12px", mb: 2 }}>Trip not found.</Alert>
-        <Button component={RouterLink} to={ROUTES.trips} startIcon={<ArrowLeftIcon />} sx={{ color: sub }}>Back to trips</Button>
+        <Button
+          component={RouterLink}
+          to={ROUTES.trips}
+          startIcon={<ArrowLeftIcon />}
+          sx={{
+            color: sub,
+            "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
+            "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+          }}
+        >Back to trips</Button>
       </Box>
     );
   }
@@ -358,7 +367,13 @@ export default function TripEdit() {
             component={RouterLink}
             to={ROUTES.tripDetail(id!)}
             startIcon={<ArrowLeftIcon />}
-            sx={{ color: sub, fontSize: "0.8rem", textTransform: "none", fontFamily: "Plus Jakarta Sans, sans-serif", mb: 3, pl: 0, "&:hover": { color: pri } }}
+            sx={{
+              color: sub, fontSize: "0.8rem", textTransform: "none",
+              fontFamily: "Plus Jakarta Sans, sans-serif", mb: 3, pl: 0,
+              "&:hover": { color: pri },
+              "@keyframes arrowBlink": { "0%, 100%": { opacity: 1 }, "50%": { opacity: 0 } },
+              "&:hover .MuiButton-startIcon": { animation: "arrowBlink 0.6s step-start infinite" },
+            }}
           >
             Back to trip
           </Button>

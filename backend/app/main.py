@@ -10,6 +10,7 @@ from app.db.redis import init_redis, close_redis
 from app.api.v1.router import api_router
 from app.middleware.request_id import RequestIDMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
+from app.middleware.demo_guard import DemoGuardMiddleware
 
 logger = get_logger(__name__)
 
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    app.add_middleware(DemoGuardMiddleware)
     app.add_middleware(RequestIDMiddleware)
     app.add_middleware(RateLimitMiddleware)
     app.add_middleware(

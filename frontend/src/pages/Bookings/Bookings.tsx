@@ -347,10 +347,11 @@ export default function Bookings() {
   const isDark = theme.palette.mode === "dark";
   const qc     = useQueryClient();
 
-  const border = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)";
-  const pri    = theme.palette.primary.main;
-  const sub    = theme.palette.text.secondary;
-  const paper  = theme.palette.background.paper;
+  const border   = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)";
+  const pri      = theme.palette.primary.main;
+  const sub      = theme.palette.text.secondary;
+  const paper    = theme.palette.background.paper;
+  const labelSx  = { fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase" as const, letterSpacing: "0.09em", mb: 1 };
 
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [statusFilter,   setStatusFilter]   = useState<string>("");
@@ -714,7 +715,7 @@ export default function Bookings() {
 
               {/* Section: Trip */}
               <Box>
-                <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                <Typography sx={labelSx}>
                   Trip
                 </Typography>
                 <Controller name="itinerary_id" control={control} render={({ field }) => (
@@ -729,7 +730,7 @@ export default function Bookings() {
 
               {/* Section: Type & Name */}
               <Box>
-                <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                <Typography sx={labelSx}>
                   Booking Details
                 </Typography>
                 <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
@@ -756,7 +757,7 @@ export default function Bookings() {
 
               {/* Section: Route */}
               <Box>
-                <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                <Typography sx={labelSx}>
                   Route (optional)
                 </Typography>
                 <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
@@ -771,7 +772,7 @@ export default function Bookings() {
 
               {/* Section: Date & Time */}
               <Box>
-                <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                <Typography sx={labelSx}>
                   Date & Time
                 </Typography>
                 <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
@@ -791,7 +792,7 @@ export default function Bookings() {
 
               {/* Section: Payment */}
               <Box>
-                <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                <Typography sx={labelSx}>
                   Payment
                 </Typography>
                 <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
@@ -808,7 +809,7 @@ export default function Bookings() {
 
               {/* Section: Reference */}
               <Box>
-                <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                <Typography sx={labelSx}>
                   Reference (optional)
                 </Typography>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
@@ -824,7 +825,7 @@ export default function Bookings() {
               {/* Status — only shown when editing */}
               {dialogMode === "edit" && (
                 <Box>
-                  <Typography sx={{ fontSize: "0.63rem", fontWeight: 700, color: sub, fontFamily: "Plus Jakarta Sans, sans-serif", textTransform: "uppercase", letterSpacing: "0.09em", mb: 1 }}>
+                  <Typography sx={labelSx}>
                     Status
                   </Typography>
                   <Controller name="status" control={control} render={({ field }) => (

@@ -83,6 +83,7 @@ export default function Login() {
   const { login: storeLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError]   = useState<string | null>(null);
+  const [demoPending, setDemoPending]   = useState(false);
   const passwordReset = (location.state as { passwordReset?: boolean })?.passwordReset ?? false;
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
@@ -90,6 +91,20 @@ export default function Login() {
   });
 
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? ROUTES.dashboard;
+
+  const handleDemoLogin = async () => {
+    setServerError(null);
+    setDemoPending(true);
+    try {
+      const res = await authService.login({ email: "demo@routegenie.app", password: "Demo@1234" });
+      storeLogin(res.user, res.access_token, res.refresh_token);
+      navigate(ROUTES.dashboard, { replace: true });
+    } catch {
+      setServerError("Demo login failed. Please try again.");
+    } finally {
+      setDemoPending(false);
+    }
+  };
 
   const onSubmit = async (data: FormData) => {
     setServerError(null);
@@ -316,6 +331,42 @@ export default function Login() {
                 </motion.div>
               </motion.div>
             </motion.form>
+
+            {/* ── Demo access ───────────────────────────────── */}
+            <motion.div variants={fadeUp}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: 2.5, mb: 2 }}>
+                <Box sx={{ flex: 1, height: "1px", backgroundColor: separator }} />
+                <Typography sx={{ color: dimText, fontSize: "0.68rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "Plus Jakarta Sans, sans-serif", flexShrink: 0 }}>
+                  or
+                </Typography>
+                <Box sx={{ flex: 1, height: "1px", backgroundColor: separator }} />
+              </Box>
+              <motion.div whileTap={buttonPress.tap}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  disabled={demoPending || isSubmitting}
+                  onClick={handleDemoLogin}
+                  sx={{
+                    py: 1.35,
+                    fontSize: "0.875rem",
+                    fontFamily: "Plus Jakarta Sans, sans-serif",
+                    letterSpacing: "0.01em",
+                    textTransform: "none",
+                    borderColor: isDark ? "rgba(245,158,11,0.28)" : "rgba(122,78,0,0.28)",
+                    color: muteText,
+                    transition: "all 0.2s",
+                    "&:hover": {
+                      borderColor: primary,
+                      color: primary,
+                      backgroundColor: isDark ? "rgba(245,158,11,0.06)" : "rgba(122,78,0,0.05)",
+                    },
+                  }}
+                >
+                  {demoPending ? "Loading demo…" : "Try Demo — no account needed"}
+                </Button>
+              </motion.div>
+            </motion.div>
 
             {/* Stats row */}
             <motion.div variants={fadeUp}>
