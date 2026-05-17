@@ -12,6 +12,9 @@ Plan, manage, and track trips with a beautifully designed full-stack application
 [![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://upstash.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge)](LICENSE)
 
+
+<img width="1851" height="1017" alt="image" src="https://github.com/user-attachments/assets/27a6c0bb-de23-41e1-877f-3a034c7a8e68" />
+
 </div>
 
 ---
@@ -24,7 +27,31 @@ RouteGenie 2.0 is a full-stack travel management application built as a portfoli
 
 ## Screenshots
 
-> _Add screenshots of Landing, Dashboard, Trip Detail, and Bookings pages here._
+<img width="1897" height="1025" alt="image" src="https://github.com/user-attachments/assets/ef53c0c1-681b-44ba-ba30-39a4513e6ecd" />
+
+---
+
+<img width="1915" height="1022" alt="image" src="https://github.com/user-attachments/assets/91483f4e-db0d-4892-b0b8-e800f0aa7cb6" />
+
+---
+
+<img width="1907" height="1032" alt="image" src="https://github.com/user-attachments/assets/e1a269f2-56e7-4baa-9684-8b99a4f11ceb" />
+
+---
+
+<img width="1897" height="1032" alt="image" src="https://github.com/user-attachments/assets/69cb9936-2c85-44f0-a80c-019a33db2c09" />
+
+---
+
+<img width="1912" height="1037" alt="image" src="https://github.com/user-attachments/assets/9764b793-7dc2-4fbe-b5f1-09e5e33c3752" />
+
+---
+
+<img width="1882" height="1032" alt="image" src="https://github.com/user-attachments/assets/2170b279-23de-430f-91d0-950d66ea2115" />
+
+---
+
+<img width="1897" height="1026" alt="image" src="https://github.com/user-attachments/assets/c5fd9884-3a9b-4cdc-9ace-fcd1b89f0033" />
 
 ---
 
@@ -248,15 +275,6 @@ RouteGenie_2_0/
 | `DELETE` | `/api/v1/bookings/:id` | Delete booking |
 | `GET` | `/api/v1/media/photo` | Fetch Pexels cover photo for a query |
 | `GET` | `/api/v1/health` | Service health check |
-
----
-
-## Roadmap
-
-- [x] **Phase 1** — Auth system, core API, design system, MUI theme
-- [x] **Phase 2** — Trip & booking CRUD, dashboard, Leaflet maps, Pexels photos
-- [ ] **Phase 3** — LangGraph AI agent, Groq streaming, SSE chat UI _(in progress)_
-- [ ] **Phase 4** — Full deployment, responsive audit, CI/CD pipeline
 
 ---
 
