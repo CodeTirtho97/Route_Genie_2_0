@@ -79,6 +79,7 @@ export default function Signup() {
   const muteText  = isDark ? "#7A6B5A" : "#8B6B40";
 
   const { data: heroPhoto } = usePexelsPhoto("travel adventure wanderlust aerial beach");
+  const [imgLoaded, setImgLoaded] = useState(false);
   const navigate = useNavigate();
   const { login: storeLogin } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
@@ -106,14 +107,14 @@ export default function Signup() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel — always cinematic dark ───────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", background: "linear-gradient(135deg, #1c1208 0%, #0d0b08 60%, #1a1005 100%)" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "linear" }}
           style={{ position: "absolute", inset: 0 }}
         >
-          <Box component="img" src={heroPhoto?.url_medium} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url_medium} alt="" onLoad={() => setImgLoaded(true)} sx={{ width: "100%", height: "100%", objectFit: "cover", opacity: imgLoaded ? 1 : 0, transition: "opacity 0.5s ease" }} />
         </motion.div>
 
         <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)" }} />

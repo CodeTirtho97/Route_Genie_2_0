@@ -15,7 +15,6 @@ dependencies = [
     "python-jose[cryptography]>=3.5.0",
     "python-multipart>=0.0.26",
     "redis[hiredis]>=7.4.0",
-    "resend>=2.29.0",
     "structlog>=25.5.0",
 ]
 

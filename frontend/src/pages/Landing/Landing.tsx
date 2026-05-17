@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Box, Typography, Button, Container, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
@@ -40,10 +41,11 @@ const CheckIcon = () => (
 // ── Data ──────────────────────────────────────────────────────
 const FEATURES = [
   {
-    Icon:    SparkleIcon,
-    title:   "AI Itinerary Builder",
-    desc:    "Describe your dream trip and our LangGraph AI agent crafts a complete, personalised day-by-day plan — restaurants, landmarks, hidden gems, travel times, and more.",
-    bullets: ["Day-by-day activity planning", "Local food and culture tips", "Optimised daily routes"],
+    Icon:         SparkleIcon,
+    title:        "AI Itinerary Builder",
+    isComingSoon: true,
+    desc:         "Describe your dream trip and our LangGraph AI agent crafts a complete, personalised day-by-day plan — restaurants, landmarks, hidden gems, travel times, and more.",
+    bullets:      ["Day-by-day activity planning", "Local food and culture tips", "Optimised daily routes"],
   },
   {
     Icon:    CalendarCheckIcon,
@@ -60,9 +62,9 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { n: "01", title: "Tell us your destination",   desc: "Share where, when, your travel style, budget, and companions. The more detail, the better the plan." },
-  { n: "02", title: "AI crafts your itinerary",   desc: "Our AI agent researches your destination, structures your days, and fills in the details — in seconds." },
-  { n: "03", title: "Book, track, and explore",   desc: "Manage every booking, check live weather, convert currencies, and update your trip from one dashboard." },
+  { n: "01", title: "Tell us your destination",   desc: "Share where, when, your travel style, budget, and companions. The more detail, the better the plan.", isComingSoon: false },
+  { n: "02", title: "AI crafts your itinerary",   desc: "Our AI agent researches your destination, structures your days, and fills in the details — in seconds.", isComingSoon: true },
+  { n: "03", title: "Book, track, and explore",   desc: "Manage every booking, check live weather, convert currencies, and update your trip from one dashboard.", isComingSoon: false },
 ];
 
 const STATS = [
@@ -92,6 +94,8 @@ export default function Landing() {
 
   const { data: heroPhoto } = usePexelsPhoto("aerial travel landscape mountains adventure");
   const { data: ctaPhoto  } = usePexelsPhoto("travel road journey freedom wanderlust");
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const [ctaLoaded,  setCtaLoaded]  = useState(false);
 
   // Section alternating background
   const altBg  = isDark ? "#0F0D09" : "#F5EFE4";
@@ -167,6 +171,7 @@ export default function Landing() {
           display:    "flex",
           alignItems: "center",
           overflow:   "hidden",
+          background: "linear-gradient(160deg, #1c1208 0%, #0d0b08 55%, #1a1005 100%)",
         }}
       >
         {/* Background image */}
@@ -176,7 +181,7 @@ export default function Landing() {
           transition={{ duration: 12, ease: "linear" }}
           style={{ position: "absolute", inset: 0, zIndex: 0 }}
         >
-          <Box component="img" src={heroPhoto?.url ?? ""} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url ?? ""} alt="" onLoad={() => setHeroLoaded(true)} sx={{ width: "100%", height: "100%", objectFit: "cover", opacity: heroLoaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
         </motion.div>
 
         {/* Overlays — base dark wash first, then directional gradients */}
@@ -319,8 +324,17 @@ export default function Landing() {
                     },
                   }}
                 >
-                  <Box sx={{ display: "inline-flex", p: 1.5, borderRadius: "10px", backgroundColor: isDark ? "rgba(245,158,11,0.1)" : "rgba(122,78,0,0.08)", color: pri, mb: 3 }}>
-                    <f.Icon />
+                  <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", mb: 3 }}>
+                    <Box sx={{ display: "inline-flex", p: 1.5, borderRadius: "10px", backgroundColor: isDark ? "rgba(245,158,11,0.1)" : "rgba(122,78,0,0.08)", color: pri }}>
+                      <f.Icon />
+                    </Box>
+                    {f.isComingSoon && (
+                      <Box sx={{ px: 1, py: 0.3, borderRadius: "20px", border: "1px solid rgba(245,158,11,0.4)", backgroundColor: "rgba(245,158,11,0.08)" }}>
+                        <Typography sx={{ fontSize: "0.6rem", color: "#F59E0B", fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                          Coming Soon
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                   <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: txt, fontSize: "1.3rem", mb: 1.25 }}>
                     {f.title}
@@ -379,9 +393,18 @@ export default function Landing() {
                       {step.n}
                     </Typography>
                   </Box>
-                  <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: txt, fontSize: "1.25rem", mb: 1.25 }}>
-                    {step.title}
-                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1.25 }}>
+                    <Typography sx={{ fontFamily: '"DM Serif Display", serif', color: txt, fontSize: "1.25rem" }}>
+                      {step.title}
+                    </Typography>
+                    {step.isComingSoon && (
+                      <Box sx={{ px: 0.9, py: 0.2, borderRadius: "20px", border: "1px solid rgba(245,158,11,0.4)", backgroundColor: "rgba(245,158,11,0.08)", flexShrink: 0 }}>
+                        <Typography sx={{ fontSize: "0.55rem", color: "#F59E0B", fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                          Soon
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
                   <Typography sx={{ color: sub, fontSize: "0.875rem", fontFamily: "Plus Jakarta Sans, sans-serif", lineHeight: 1.7, maxWidth: 260, mx: "auto" }}>
                     {step.desc}
                   </Typography>
@@ -401,7 +424,7 @@ export default function Landing() {
           textAlign:  "center",
         }}
       >
-        <Box component="img" src={ctaPhoto?.url ?? ""} alt="" sx={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        <Box component="img" src={ctaPhoto?.url ?? ""} alt="" onLoad={() => setCtaLoaded(true)} sx={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: ctaLoaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
         <Box sx={{ position: "absolute", inset: 0, background: "rgba(13,11,8,0.82)" }} />
         <Box sx={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 50%, ${isDark ? "rgba(245,158,11,0.12)" : "rgba(245,158,11,0.18)"} 0%, transparent 65%)` }} />
 

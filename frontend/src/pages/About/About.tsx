@@ -29,7 +29,7 @@ const TECH_STACK = [
   {
     category: "Infrastructure",
     color:    "#C084FC",
-    items:    ["MongoDB Atlas", "Upstash Redis", "Vercel (Frontend)", "Railway (Backend)", "GitHub Actions"],
+    items:    ["MongoDB Atlas", "Upstash Redis", "Vercel (Frontend)", "Render (Backend)", "GitHub Actions"],
   },
 ];
 
@@ -177,11 +177,18 @@ export default function About() {
             {TECH_STACK.map((stack, i) => (
               <motion.div key={stack.category} {...reveal(i * 0.1)}>
                 <Box sx={{ p: 3, borderRadius: "14px", backgroundColor: paper, border: `1px solid ${border}`, height: "100%" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2.5 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2.5, flexWrap: "wrap" }}>
                     <Box sx={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: stack.color, boxShadow: `0 0 10px ${stack.color}80`, flexShrink: 0 }} />
                     <Typography sx={{ fontWeight: 700, fontSize: "0.78rem", fontFamily: "Plus Jakarta Sans, sans-serif", color: stack.color, letterSpacing: "0.04em" }}>
                       {stack.category}
                     </Typography>
+                    {stack.category === "AI & Data" && (
+                      <Box sx={{ px: 0.9, py: 0.2, borderRadius: "20px", border: "1px solid rgba(245,158,11,0.4)", backgroundColor: "rgba(245,158,11,0.08)" }}>
+                        <Typography sx={{ fontSize: "0.55rem", color: "#F59E0B", fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                          Coming Soon
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                   <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                     {stack.items.map((item) => (

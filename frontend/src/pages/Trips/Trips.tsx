@@ -81,6 +81,7 @@ function TripCard({ trip, isDark, border, paper }: { trip: TripListItem; isDark:
   const theme  = useTheme();
   const color  = TYPE_COLORS[trip.trip_type] ?? "#F59E0B";
   const status = STATUS_META[trip.status] ?? STATUS_META.planned;
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <motion.div variants={fadeUp}>
@@ -102,7 +103,8 @@ function TripCard({ trip, isDark, border, paper }: { trip: TripListItem; isDark:
         <Box sx={{ position: "relative", height: 140, overflow: "hidden" }}>
           {trip.cover_image_url ? (
             <>
-              <Box component="img" src={trip.cover_image_url} alt={trip.destination} sx={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s", ".MuiBox-root:hover &": { transform: "scale(1.04)" } }} />
+              {!imgLoaded && <Skeleton variant="rectangular" sx={{ position: "absolute", inset: 0, width: "100%", height: "100%", transform: "none" }} />}
+              <Box component="img" src={trip.cover_image_url} alt={trip.destination} onLoad={() => setImgLoaded(true)} sx={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s, opacity 0.35s", ".MuiBox-root:hover &": { transform: "scale(1.04)" }, opacity: imgLoaded ? 1 : 0 }} />
               <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)" }} />
             </>
           ) : (

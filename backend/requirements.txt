@@ -19,12 +19,9 @@ certifi==2026.2.25
     # via
     #   httpcore
     #   httpx
-    #   requests
     #   sentry-sdk
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
     # via cryptography
-charset-normalizer==3.4.7
-    # via requests
 click==8.3.2
     # via
     #   beanie
@@ -77,7 +74,6 @@ idna==3.11
     #   anyio
     #   email-validator
     #   httpx
-    #   requests
 jinja2==3.1.6
     # via fastapi
 lazy-model==0.2.0
@@ -135,10 +131,6 @@ pyyaml==6.0.3
     # via uvicorn
 redis==7.4.0
     # via backend
-requests==2.33.1
-    # via resend
-resend==2.29.0
-    # via backend
 rich==15.0.0
     # via
     #   rich-toolkit
@@ -174,7 +166,6 @@ typing-extensions==4.15.0
     #   pydantic
     #   pydantic-core
     #   pydantic-extra-types
-    #   resend
     #   rich-toolkit
     #   starlette
     #   typing-inspection
@@ -184,9 +175,7 @@ typing-inspection==0.4.2
     #   pydantic
     #   pydantic-settings
 urllib3==2.6.3
-    # via
-    #   requests
-    #   sentry-sdk
+    # via sentry-sdk
 uvicorn==0.44.0
     # via
     #   fastapi

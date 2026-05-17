@@ -65,6 +65,7 @@ function TripCard({ trip, isDark, border, paper }: {
   const theme = useTheme();
   const typeColor   = TYPE_COLORS[trip.trip_type] ?? "#F59E0B";
   const statusColor = STATUS_COLORS[trip.status]  ?? "#94A3B8";
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <Box
@@ -85,11 +86,13 @@ function TripCard({ trip, isDark, border, paper }: {
       <Box sx={{ position: "relative", height: 130, overflow: "hidden" }}>
         {trip.cover_image_url ? (
           <>
+            {!imgLoaded && <Skeleton variant="rectangular" sx={{ position: "absolute", inset: 0, width: "100%", height: "100%", transform: "none" }} />}
             <Box
               component="img"
               src={trip.cover_image_url}
               alt={trip.destination}
-              sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+              onLoad={() => setImgLoaded(true)}
+              sx={{ width: "100%", height: "100%", objectFit: "cover", opacity: imgLoaded ? 1 : 0, transition: "opacity 0.35s" }}
             />
             <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(13,11,8,0.65) 0%, transparent 55%)" }} />
           </>

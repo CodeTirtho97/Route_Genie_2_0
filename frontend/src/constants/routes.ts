@@ -3,8 +3,6 @@ export const ROUTES = {
   about:          "/about",
   login:          "/login",
   signup:         "/signup",
-  forgotPassword: "/forgot-password",
-  resetPassword:  "/reset-password",
   dashboard:      "/dashboard",
   trips:          "/trips",
   tripCreate:     "/trips/new",

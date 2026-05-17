@@ -71,6 +71,7 @@ export default function Login() {
     : "0 0 14px rgba(122,78,0,0.1),   0 1px 0 rgba(122,78,0,0.06) inset";
 
   const { data: heroPhoto } = usePexelsPhoto("venice canal italy gondola travel aerial");
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const [quote] = useState<{ text: string; author: string }>(() => {
     const data = yaml.load(quotesRaw) as { quotes: Array<{ text: string; author: string }> };
@@ -84,8 +85,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError]   = useState<string | null>(null);
   const [demoPending, setDemoPending]   = useState(false);
-  const passwordReset = (location.state as { passwordReset?: boolean })?.passwordReset ?? false;
-
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -123,14 +122,14 @@ export default function Login() {
     <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: panelBg }}>
 
       {/* ── Hero panel — always cinematic dark ───────────────── */}
-      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden" }}>
+      <Box sx={{ display: { xs: "none", md: "block" }, flex: 1, position: "relative", overflow: "hidden", background: "linear-gradient(135deg, #1c1208 0%, #0d0b08 60%, #1a1005 100%)" }}>
         <motion.div
           initial={{ scale: 1.06 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "linear" }}
           style={{ position: "absolute", inset: 0 }}
         >
-          <Box component="img" src={heroPhoto?.url_medium} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box component="img" src={heroPhoto?.url_medium} alt="" onLoad={() => setImgLoaded(true)} sx={{ width: "100%", height: "100%", objectFit: "cover", opacity: imgLoaded ? 1 : 0, transition: "opacity 0.5s ease" }} />
         </motion.div>
 
         {/* Vignette + bottom dark + right edge fades to form panel */}
@@ -236,13 +235,6 @@ export default function Login() {
             </motion.div>
 
             <AnimatePresence>
-              {passwordReset && (
-                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  <Alert severity="success" sx={{ mb: 2.5, borderRadius: "8px", fontSize: "0.85rem" }}>
-                    Password reset successfully. Sign in with your new password.
-                  </Alert>
-                </motion.div>
-              )}
               {serverError && (
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   <Alert severity="error" sx={{ mb: 2.5, borderRadius: "8px", fontSize: "0.85rem" }}>
@@ -307,18 +299,6 @@ export default function Login() {
                     },
                   }}
                 />
-              </motion.div>
-
-              <motion.div variants={fadeUp}>
-                <Box sx={{ textAlign: "right", mb: 3.5 }}>
-                  <Typography
-                    component={RouterLink}
-                    to={ROUTES.forgotPassword}
-                    sx={{ color: muteText, fontSize: "0.8rem", textDecoration: "none", "&:hover": { color: primary }, transition: "color 0.2s" }}
-                  >
-                    Forgot password?
-                  </Typography>
-                </Box>
               </motion.div>
 
               <motion.div variants={fadeUp}>

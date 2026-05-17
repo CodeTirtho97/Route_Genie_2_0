@@ -17,10 +17,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
-    # Email
-    RESEND_API_KEY: str = ""
-    APP_URL: str = "http://localhost:5173"
-
     # AI
     GROQ_API_KEY: str = ""
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
